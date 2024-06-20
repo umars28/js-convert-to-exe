@@ -29,6 +29,29 @@ jobs:
 
     - name: Package Electron app for Windows
       run: npx electron-builder --win
+    
+    - name: Create Release
+      id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Menggunakan secret GH_TOKEN
+        with:
+          tag_name: v1.0.0
+          release_name: Release v1.0.0
+          body: Release v1.0.0
+          draft: false
+          prerelease: false
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Menggunakan secret GH_TOKEN
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/MyElectronApp-Setup-1.0.0.exe
+          asset_name: MyElectronApp-Setup-1.0.0.exe
+          asset_content_type: application/octet-stream
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
